@@ -34,7 +34,7 @@ static NSString * ServiceName = @"crowdspeakDemo";
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
     self.qrImageView.image = [CSQRGenerator imageWithString:ServiceName];
-    //self.session = [[TDSession alloc] initWithPeerDisplayName:ServiceName];
+    self.session = [[TDSession alloc] initWithPeerDisplayName:ServiceName];
 }
 
 

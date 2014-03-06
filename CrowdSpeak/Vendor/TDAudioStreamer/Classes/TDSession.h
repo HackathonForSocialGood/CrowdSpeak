@@ -21,6 +21,8 @@
 @property (weak, nonatomic) id<TDSessionDelegate> delegate;
 @property (strong, nonatomic) MCSession *session;
 
+- (instancetype)initWithPeerID:(MCPeerID *)peerID;
+
 - (instancetype)initWithPeerDisplayName:(NSString *)name;
 
 - (void)startAdvertisingForServiceType:(NSString *)type discoveryInfo:(NSDictionary *)info;

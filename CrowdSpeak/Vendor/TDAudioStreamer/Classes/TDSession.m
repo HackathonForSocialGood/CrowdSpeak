@@ -19,6 +19,17 @@
 
 @implementation TDSession
 
+- (instancetype)initWithPeerID:(MCPeerID *)peerID
+{
+    self = [super init];
+    if (!self) return nil;
+    
+    self.peerID = peerID;
+    
+    return self;
+}
+
+
 - (instancetype)initWithPeerDisplayName:(NSString *)name
 {
     self = [super init];

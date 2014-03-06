@@ -731,7 +731,7 @@
 				INFOPLIST_FILE = "CrowdSpeak/CrowdSpeak-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					/Users/dtreiman/Desktop/CrowdSpeak/CrowdSpeak/Vendor/ZBarSDK,
+					"$(SRCROOT)/CrowdSpeak/Vendor/ZBarSDK",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/CrowdSpeak/Vendor/**";
@@ -751,7 +751,7 @@
 				INFOPLIST_FILE = "CrowdSpeak/CrowdSpeak-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					/Users/dtreiman/Desktop/CrowdSpeak/CrowdSpeak/Vendor/ZBarSDK,
+					"$(SRCROOT)/CrowdSpeak/Vendor/ZBarSDK",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/CrowdSpeak/Vendor/**";
