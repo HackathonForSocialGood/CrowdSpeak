@@ -75,10 +75,9 @@
     AVCaptureDeviceInput * input = [AVCaptureDeviceInput deviceInputWithDevice:microphone error:&error];
     [session addInput:input];
     // Add inputs and outputs.
-//    AVCaptureAudioDataOutput * output = [[AVCaptureAudioDataOutput alloc] init];
-//    [output setSampleBufferDelegate:self queue:self.sampleQueue];
-//    output.sampleBufferDelegate = self;
-//    [session addOutput:output];
+    AVCaptureAudioDataOutput * output = [[AVCaptureAudioDataOutput alloc] init];
+    [output setSampleBufferDelegate:self queue:self.sampleQueue];
+    [session addOutput:output];
     
     [session commitConfiguration];
     [session startRunning];
@@ -166,5 +165,15 @@
             break;
     }
 }
+
+
+#pragma mark AVCaptureAudioDataOutputSampleBufferDelegate
+
+
+- (void) captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection
+{
+    NSLog(@"Did output");
+}
+
 
 @end

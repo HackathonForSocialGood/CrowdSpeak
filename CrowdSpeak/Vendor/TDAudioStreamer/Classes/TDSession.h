@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@class TDSession, MCPeerID, MCBrowserViewController;
+@class TDSession, MCPeerID, MCBrowserViewController, MCSession;
 @protocol TDSessionDelegate <NSObject>
 
 - (void)session:(TDSession *)session didReceiveAudioStream:(NSInputStream *)stream;
@@ -19,6 +19,7 @@
 @interface TDSession : NSObject
 
 @property (weak, nonatomic) id<TDSessionDelegate> delegate;
+@property (strong, nonatomic) MCSession *session;
 
 - (instancetype)initWithPeerDisplayName:(NSString *)name;
 

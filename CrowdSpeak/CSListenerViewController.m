@@ -65,6 +65,7 @@
     MCPeerID * peerID = appDelegate.peerID;
     self.browser = [[MCNearbyServiceBrowser alloc] initWithPeer:peerID serviceType:self.code];
     self.browser.delegate = self;
+    [self.browser startBrowsingForPeers];
 }
 
 
@@ -88,6 +89,12 @@
 
 
 #pragma mark MCNearbyServiceBrowserDelegate
+
+
+- (void) browser:(MCNearbyServiceBrowser *)browser didNotStartBrowsingForPeers:(NSError *)error
+{
+    NSLog(@"Did not start browsing");
+}
 
 
 - (void) browser:(MCNearbyServiceBrowser *)browser foundPeer:(MCPeerID *)peerID withDiscoveryInfo:(NSDictionary *)info

@@ -12,7 +12,6 @@
 
 @interface TDSession () <MCSessionDelegate, MCBrowserViewControllerDelegate>
 
-@property (strong, nonatomic) MCSession *session;
 @property (strong, nonatomic) MCAdvertiserAssistant *advertiser;
 @property (strong, nonatomic) MCPeerID *peerID;
 

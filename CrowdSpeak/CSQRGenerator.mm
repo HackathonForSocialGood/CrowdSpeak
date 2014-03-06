@@ -15,7 +15,7 @@
 
 + (UIImage *) imageWithString:(NSString *)string
 {
-    DataMatrix * matrix = [QREncoder encodeWithECLevel:1 version:1 string:@"crowdspeak-demo"];
+    DataMatrix * matrix = [QREncoder encodeWithECLevel:1 version:1 string:string];
     UIImage * image = [QREncoder renderDataMatrix:matrix imageDimension:280];
     return image;
 }

@@ -15,7 +15,9 @@
 #import <AVFoundation/AVFoundation.h>
 
 
-@interface CSSpeakerViewController () <MCNearbyServiceAdvertiserDelegate, MCSessionDelegate>
+static NSString * ServiceName = @"crowdspeakDemo";
+
+@interface CSSpeakerViewController () <MCNearbyServiceAdvertiserDelegate>
 
 @property (nonatomic, strong) MCNearbyServiceAdvertiser * advertiser;
 @property (nonatomic, strong) TDSession * session;
@@ -31,13 +33,14 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
-    self.qrImageView.image = [CSQRGenerator imageWithString:@"crowdspeak-demo"];
-    self.session = [[TDSession alloc] initWithPeerDisplayName:@"CrowdSpeak"];
+    self.qrImageView.image = [CSQRGenerator imageWithString:ServiceName];
+    //self.session = [[TDSession alloc] initWithPeerDisplayName:ServiceName];
 }
 
 
 - (void) viewDidAppear:(BOOL)animated
 {
+    [self startBroadcasting];
     [super viewWillAppear:animated];
     [[AVAudioSession sharedInstance] requestRecordPermission:^(BOOL granted) {
         NSLog(@"OK, we can record");
@@ -67,7 +70,7 @@
     MCPeerID * peerID = appDelegate.peerID;
     MCNearbyServiceAdvertiser * advertiser = [[MCNearbyServiceAdvertiser alloc] initWithPeer:peerID
                                                                                discoveryInfo:nil
-                                                                                 serviceType:@"crowdspeak"];
+                                                                                 serviceType:ServiceName];
     advertiser.delegate = self;
     [advertiser startAdvertisingPeer];
     self.advertiser = advertiser;
@@ -79,6 +82,16 @@
     [self.advertiser stopAdvertisingPeer];
     self.advertiser = nil;
 }
-\
+
+
+#pragma mark MCNearbyServiceAdvertiserDelegate
+
+
+- (void) advertiser:(MCNearbyServiceAdvertiser *)advertiser didReceiveInvitationFromPeer:(MCPeerID *)peerID withContext:(NSData *)context invitationHandler:(void (^)(BOOL accept, MCSession *session))invitationHandler
+{
+    NSLog(@"Got invitation");
+    invitationHandler(YES, self.session.session);
+}
+
 
 @end
