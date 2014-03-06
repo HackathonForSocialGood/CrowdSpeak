@@ -99,12 +99,20 @@
 
 - (void) browser:(MCNearbyServiceBrowser *)browser foundPeer:(MCPeerID *)peerID withDiscoveryInfo:(NSDictionary *)info
 {
-    MCSession * session = [[MCSession alloc] initWithPeer:peerID
-                                         securityIdentity:nil
-                                     encryptionPreference:MCEncryptionNone];
-    session.delegate = self;
-    [browser invitePeer:peerID toSession:session withContext:nil timeout:30];
-    self.session = session;
+    if (self.session == nil) {
+        MCSession * session = [[MCSession alloc] initWithPeer:peerID
+                                             securityIdentity:nil
+                                         encryptionPreference:MCEncryptionNone];
+        session.delegate = self;
+        self.session = session;
+    }
+    [browser invitePeer:peerID toSession:self.session withContext:[@"Hello" dataUsingEncoding:NSUTF8StringEncoding] timeout:30];
+}
+
+
+- (void) browser:(MCNearbyServiceBrowser *)browser lostPeer:(MCPeerID *)peerID
+{
+    NSLog(@"Listener: lost peer");
 }
 
 
@@ -115,21 +123,41 @@
 {
     if (state == MCSessionStateNotConnected) {
         self.session = nil;
+        NSLog(@"Listener: Not connected");
     }
     else if (state == MCSessionStateConnected) {
         // start listening for data
+        NSLog(@"Listener: Connected");
     }
 }
 
 
-- (void)session:(MCSession *)session
-didReceiveStream:(NSInputStream *)stream
-       withName:(NSString *)streamName
-       fromPeer:(MCPeerID *)peerID
+- (void) session:(MCSession *)session didReceiveData:(NSData *)data fromPeer:(MCPeerID *)peerID
 {
-    self.player = [[TDAudioInputStreamer alloc] initWithInputStream:stream];
-    [self.player start];
+    NSString * message = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@""
+                                                     message:message
+                                                    delegate:self
+                                           cancelButtonTitle:@"OK"
+                                           otherButtonTitles:nil];
+    [alert show];
 }
+
+
+- (void) alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSUInteger)buttonIndex
+{
+    
+}
+
+//- (void)session:(MCSession *)session
+//didReceiveStream:(NSInputStream *)stream
+//       withName:(NSString *)streamName
+//       fromPeer:(MCPeerID *)peerID
+//{
+//    NSLog(@"Listener: Got a stream");
+//    self.player = [[TDAudioInputStreamer alloc] initWithInputStream:stream];
+//    [self.player start];
+//}
 
 
 

@@ -11,16 +11,16 @@
 #import "CSQRGenerator.h"
 #import "CSAppDelegate.h"
 #import "TDAudioOutputStreamer.h"
-#import "TDSession.h"
 #import <AVFoundation/AVFoundation.h>
+#import <GameKit/GameKit.h>
 
 
 static NSString * ServiceName = @"crowdspeakDemo";
 
-@interface CSSpeakerViewController () <MCNearbyServiceAdvertiserDelegate>
+@interface CSSpeakerViewController () <MCNearbyServiceAdvertiserDelegate, MCSessionDelegate>
 
 @property (nonatomic, strong) MCNearbyServiceAdvertiser * advertiser;
-@property (nonatomic, strong) TDSession * session;
+@property (nonatomic, strong) MCSession * session;
 @property (nonatomic, strong) TDAudioOutputStreamer * outputStreamer;
 
 @end
@@ -34,17 +34,16 @@ static NSString * ServiceName = @"crowdspeakDemo";
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
     self.qrImageView.image = [CSQRGenerator imageWithString:ServiceName];
-    self.session = [[TDSession alloc] initWithPeerDisplayName:ServiceName];
+//    self.session = [[TDSession alloc] initWithPeerDisplayName:ServiceName];
 }
 
 
 - (void) viewDidAppear:(BOOL)animated
 {
-    [self startBroadcasting];
     [super viewWillAppear:animated];
     [[AVAudioSession sharedInstance] requestRecordPermission:^(BOOL granted) {
-        NSLog(@"OK, we can record");
     }];
+    [self startBroadcasting];
 }
 
 
@@ -55,13 +54,13 @@ static NSString * ServiceName = @"crowdspeakDemo";
 }
 
 
-- (void) startRecording
-{
-    TDSession * session = self.session;
-    self.outputStreamer = [[TDAudioOutputStreamer alloc] initWithOutputStream:[session outputStreamForPeer:session.connectedPeers[0]]];
-    [self.outputStreamer streamAudioFromMic];
-    [self.outputStreamer start];
-}
+//- (void) startRecording
+//{
+//    TDSession * session = self.session;
+//    self.outputStreamer = [[TDAudioOutputStreamer alloc] initWithOutputStream:[session outputStreamForPeer:session.connectedPeers[0]]];
+//    [self.outputStreamer streamAudioFromMic];
+//    [self.outputStreamer start];
+//}
 
 
 - (IBAction) startBroadcasting
@@ -84,13 +83,97 @@ static NSString * ServiceName = @"crowdspeakDemo";
 }
 
 
+- (IBAction) textMessage:(id)sender
+{
+    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Send a Message", @"Alert Title.")
+                                                     message:NSLocalizedString(@"", @"Alert Message.")
+                                                    delegate:self
+                                           cancelButtonTitle:NSLocalizedString(@"OK", @"Button Title")
+                                           otherButtonTitles:NSLocalizedString(@"Cancel", @"Button Title"), nil];
+    alert.alertViewStyle = UIAlertViewStylePlainTextInput;
+    [alert textFieldAtIndex:0].keyboardType = UIKeyboardTypeEmailAddress;
+    [alert show];
+}
+
+
+- (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 0) {
+        NSString * message = [alertView textFieldAtIndex:0].text;
+        if ([message length] == 0) {
+            // If the user entered no text, do nothing
+            return;
+        }
+        [self sendData:[message dataUsingEncoding:NSUTF8StringEncoding]];
+    }
+}
+
+
 #pragma mark MCNearbyServiceAdvertiserDelegate
 
 
-- (void) advertiser:(MCNearbyServiceAdvertiser *)advertiser didReceiveInvitationFromPeer:(MCPeerID *)peerID withContext:(NSData *)context invitationHandler:(void (^)(BOOL accept, MCSession *session))invitationHandler
+- (void) advertiser:(MCNearbyServiceAdvertiser *)advertiser didReceiveInvitationFromPeer:(MCPeerID *)remotePeerID withContext:(NSData *)context invitationHandler:(void (^)(BOOL accept, MCSession *session))invitationHandler
 {
-    NSLog(@"Got invitation");
-    invitationHandler(YES, self.session.session);
+    if (self.session == nil) {
+        CSAppDelegate * appDelegate = (CSAppDelegate *)[UIApplication sharedApplication].delegate;
+        MCPeerID * peerID = appDelegate.peerID;
+        self.session = [[MCSession alloc] initWithPeer:peerID];
+        self.session.delegate = self;
+    }
+    NSLog(@"Handle invitation");
+    double delayInSeconds = 2.0;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        invitationHandler(YES, self.session);
+    });
+
+////        invitationHandler(YES, self.session);
+////    }
+////    else {
+//        [self.session nearbyConnectionDataForPeer:remotePeerID
+//                            withCompletionHandler:^(NSData *connectionData, NSError * error) {
+//                                [self.session connectPeer:remotePeerID withNearbyConnectionData:connectionData];
+//                        invitationHandler(YES, self.session);
+//                    }];
+////    }
+}
+
+
+- (void)session:(MCSession *)session peer:(MCPeerID *)peerID didChangeState:(MCSessionState)state
+{
+    if (state == MCSessionStateConnecting) {
+        NSLog(@"Connecting to %@", peerID.displayName);
+    } else if (state == MCSessionStateConnected) {
+        NSLog(@"Connected to %@", peerID.displayName);
+    } else if (state == MCSessionStateNotConnected) {
+        NSLog(@"Disconnected from %@", peerID.displayName);
+    }
+}
+
+- (void)session:(MCSession *)session didReceiveData:(NSData *)data fromPeer:(MCPeerID *)peerID
+{
+}
+
+- (void)session:(MCSession *)session didReceiveStream:(NSInputStream *)stream withName:(NSString *)streamName fromPeer:(MCPeerID *)peerID
+{
+}
+
+- (void)session:(MCSession *)session didStartReceivingResourceWithName:(NSString *)resourceName fromPeer:(MCPeerID *)peerID withProgress:(NSProgress *)progress
+{
+}
+
+- (void)session:(MCSession *)session didFinishReceivingResourceWithName:(NSString *)resourceName fromPeer:(MCPeerID *)peerID atURL:(NSURL *)localURL withError:(NSError *)error
+{
+}
+
+
+- (void) sendData:(NSData *)data
+{
+    NSError *error;
+    [self.session sendData:data toPeers:self.session.connectedPeers withMode:MCSessionSendDataReliable error:&error];
+    if (error) {
+        NSLog(@"Error: %@", error.userInfo.description);
+    }
 }
 
 

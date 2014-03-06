@@ -12,4 +12,6 @@
 
 @property (nonatomic, weak) IBOutlet UIImageView * qrImageView;
 
+- (IBAction) textMessage:(id)sender;
+
 @end

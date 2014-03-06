@@ -52,6 +52,7 @@
 		D7CBC60A18C90A680010B5A0 /* TDAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D7CBC5F218C90A680010B5A0 /* TDAppDelegate.m */; };
 		D7CBC60B18C90A680010B5A0 /* TDMultipeerGuestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D7CBC5F518C90A680010B5A0 /* TDMultipeerGuestViewController.m */; };
 		D7CBC60C18C90A680010B5A0 /* TDMultipeerHostViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D7CBC5F718C90A680010B5A0 /* TDMultipeerHostViewController.m */; };
+		D7CBC61118C925230010B5A0 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D7CBC61018C925230010B5A0 /* GameKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -168,6 +169,7 @@
 		D7CBC5F518C90A680010B5A0 /* TDMultipeerGuestViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TDMultipeerGuestViewController.m; sourceTree = "<group>"; };
 		D7CBC5F618C90A680010B5A0 /* TDMultipeerHostViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDMultipeerHostViewController.h; sourceTree = "<group>"; };
 		D7CBC5F718C90A680010B5A0 /* TDMultipeerHostViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TDMultipeerHostViewController.m; sourceTree = "<group>"; };
+		D7CBC61018C925230010B5A0 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -175,6 +177,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D7CBC61118C925230010B5A0 /* GameKit.framework in Frameworks */,
 				D7CBC5C718C8FF480010B5A0 /* QuartzCore.framework in Frameworks */,
 				D7CBC5C418C8FF3A0010B5A0 /* CoreMedia.framework in Frameworks */,
 				D7CBC5C518C8FF3A0010B5A0 /* CoreVideo.framework in Frameworks */,
@@ -224,6 +227,7 @@
 		D7CBC54318C8EB190010B5A0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D7CBC61018C925230010B5A0 /* GameKit.framework */,
 				D7CBC5C618C8FF480010B5A0 /* QuartzCore.framework */,
 				D7CBC5C218C8FF3A0010B5A0 /* CoreMedia.framework */,
 				D7CBC5C318C8FF3A0010B5A0 /* CoreVideo.framework */,

@@ -13,6 +13,7 @@
 
 - (void)session:(TDSession *)session didReceiveAudioStream:(NSInputStream *)stream;
 - (void)session:(TDSession *)session didReceiveData:(NSData *)data;
+- (void)session:(TDSession *)session didGetConnectedPeer:(MCPeerID *)peer;
 
 @end
 
